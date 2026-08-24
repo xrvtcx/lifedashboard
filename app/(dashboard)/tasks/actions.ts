@@ -28,6 +28,21 @@ export async function updateTaskStatus(id: number, status: 'todo' | 'in_progress
   revalidatePath('/');
 }
 
+export async function updateTaskPriority(id: number, priority: 'low' | 'medium' | 'high') {
+  await db.update(tasks).set({ priority, updatedAt: new Date() }).where(eq(tasks.id, id));
+  revalidatePath('/tasks');
+  revalidatePath('/');
+}
+
+export async function updateTaskDueDate(id: number, dueDate: string) {
+  await db
+    .update(tasks)
+    .set({ dueDate: dueDate ? new Date(dueDate) : null, updatedAt: new Date() })
+    .where(eq(tasks.id, id));
+  revalidatePath('/tasks');
+  revalidatePath('/');
+}
+
 export async function deleteTask(id: number) {
   await db.delete(tasks).where(eq(tasks.id, id));
   revalidatePath('/tasks');

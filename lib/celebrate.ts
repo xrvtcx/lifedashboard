@@ -32,7 +32,7 @@ function playPop() {
   }
 }
 
-const CONFETTI_COLORS = ['#2F5D50', '#C08A2E', '#9C3D2E', '#15211D', '#3B6E8F'];
+const CONFETTI_COLORS = ['#7A1F2B', '#B08D57', '#C9A24B', '#211815', '#F7F3EC'];
 
 function burstConfetti() {
   const canvas = document.createElement('canvas');

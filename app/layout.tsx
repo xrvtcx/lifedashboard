@@ -1,26 +1,26 @@
 import type { Metadata } from 'next';
-import { Space_Grotesk, Inter, IBM_Plex_Mono } from 'next/font/google';
+import { Cormorant_Garamond, Inter, Josefin_Sans } from 'next/font/google';
 import './globals.css';
 
-const display = Space_Grotesk({
+const display = Cormorant_Garamond({
   subsets: ['latin'],
   variable: '--font-display',
-  weight: ['500', '700'],
+  weight: ['500', '600', '700'],
 });
 const body = Inter({
   subsets: ['latin'],
   variable: '--font-body',
   weight: ['400', '500', '600'],
 });
-const mono = IBM_Plex_Mono({
+const mono = Josefin_Sans({
   subsets: ['latin'],
   variable: '--font-mono',
-  weight: ['400', '500'],
+  weight: ['400', '500', '600'],
 });
 
 export const metadata: Metadata = {
-  title: 'Logbook — Personal Dashboard',
-  description: 'A personal productivity dashboard for tasks, habits, goals, notes, and finances.',
+  title: "Rachel's Life Dashboard",
+  description: 'A personal dashboard for tasks, habits, the weekly view, finances, notes, quarterly goals, and side quests.',
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

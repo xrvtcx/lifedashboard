@@ -61,7 +61,7 @@ export const habits = pgTable('habits', {
   description: text('description'),
   section: habitSectionEnum('section').notNull().default('daily'),
   icon: text('icon').notNull().default('Star'),
-  color: text('color').notNull().default('#2F5D50'),
+  color: text('color').notNull().default('#7A1F2B'),
   weeklyGoal: integer('weekly_goal').notNull().default(7),
   sortOrder: integer('sort_order').notNull().default(0),
   createdAt: timestamp('created_at').defaultNow().notNull(),

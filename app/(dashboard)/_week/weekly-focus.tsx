@@ -38,7 +38,7 @@ export function WeeklyFocus({ weekStart, focus, goals }: { weekStart: string; fo
                 if (!g.completed) celebrate();
                 toggleFocusGoal(g.id, g.completed);
               }}
-              className="h-4 w-4 accent-[#2F5D50] shrink-0"
+              className="h-4 w-4 accent-ledger shrink-0"
             />
             <span className={`text-sm flex-1 ${g.completed ? 'line-through text-ink/40' : ''}`}>{g.title}</span>
             <button onClick={() => deleteFocusGoal(g.id)} className="text-xs text-ink/20 group-hover:text-rust shrink-0">

@@ -2,20 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --grid-line: rgba(21, 33, 29, 0.045);
-}
-
 html,
 body {
-  background-color: #eef0ec;
-  color: #15211d;
-}
-
-body {
-  background-image: linear-gradient(var(--grid-line) 1px, transparent 1px),
-    linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
-  background-size: 28px 28px;
+  background-color: #f7f3ec;
+  color: #211815;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -28,23 +18,25 @@ body {
   }
 }
 
+/* Engraved-plaque style label — used for status/category tags in place of
+   a rounded "pill" badge. Crisp, unrotated, letter-spaced. */
 .stamp {
   display: inline-flex;
   align-items: center;
   gap: 0.35em;
-  border: 1.5px solid currentColor;
-  padding: 0.15em 0.6em;
-  font-family: var(--font-mono), monospace;
-  font-size: 0.72rem;
-  letter-spacing: 0.08em;
+  border: 1px solid currentColor;
+  padding: 0.2em 0.65em;
+  font-family: var(--font-mono), sans-serif;
+  font-weight: 500;
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
-  transform: rotate(-1.5deg);
-  border-radius: 3px;
+  border-radius: 1px;
   white-space: nowrap;
 }
 
 :focus-visible {
-  outline: 2px solid #2f5d50;
+  outline: 2px solid #7a1f2b;
   outline-offset: 2px;
 }
 

@@ -55,7 +55,7 @@ export function TaskList({ tasks }: { tasks: Task[] }) {
                   type="checkbox"
                   checked={t.status === 'done'}
                   onChange={() => updateTaskStatus(t.id, t.status === 'done' ? 'todo' : 'done')}
-                  className="h-4 w-4 accent-[#2F5D50]"
+                  className="h-4 w-4 accent-ledger"
                 />
                 <div className="min-w-0">
                   <p className={clsx('text-sm truncate', t.status === 'done' && 'line-through text-ink/40')}>

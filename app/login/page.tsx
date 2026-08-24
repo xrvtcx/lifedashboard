@@ -8,7 +8,7 @@ export default function LoginPage({
   return (
     <div className="min-h-screen flex items-center justify-center px-4">
       <div className="w-full max-w-sm border border-slate rounded-md bg-paper p-6">
-        <p className="stamp text-ledger mb-4">Logbook</p>
+        <p className="stamp text-ledger mb-4">Rachel&rsquo;s Life Dashboard</p>
         <h1 className="font-display text-xl font-bold mb-1">Sign in</h1>
         <p className="text-sm text-ink/60 mb-5">Enter the shared password to continue.</p>
         <form action={login} className="space-y-3">

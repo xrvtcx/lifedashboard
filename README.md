@@ -1,4 +1,4 @@
-# Logbook — a personal productivity dashboard
+# Rachel's Life Dashboard
 
 Tasks, habits, a weekly command-center, a quarterly big-picture view, and a
 side-quest tracker, in one small Next.js app. Built with the App Router,

@@ -21,7 +21,7 @@ export async function createHabit(formData: FormData) {
 
   const section = String(formData.get('section') || 'daily') as 'daily' | 'devotional';
   const icon = String(formData.get('icon') || 'Star');
-  const color = String(formData.get('color') || '#2F5D50');
+  const color = String(formData.get('color') || '#7A1F2B');
   const weeklyGoal = Math.max(1, Math.min(7, Number(formData.get('weeklyGoal')) || 7));
 
   const existing = await db.select().from(habits).where(eq(habits.section, section));

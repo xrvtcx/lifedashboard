@@ -2,14 +2,23 @@ import { HTMLAttributes } from 'react';
 import clsx from 'clsx';
 
 export function Card({ className, ...props }: HTMLAttributes<HTMLDivElement>) {
-  return <div className={clsx('bg-paper border border-slate rounded-md p-5', className)} {...props} />;
+  return (
+    <div
+      className={clsx(
+        'bg-paper border border-slate rounded-sm shadow-[0_1px_3px_rgba(33,24,21,0.06)] p-5',
+        className
+      )}
+      {...props}
+    />
+  );
 }
 
 export function SectionLabel({ children }: { children: React.ReactNode }) {
   return (
-    <h2 className="font-display text-xs font-semibold uppercase tracking-[0.15em] text-ink/60 mb-3">
-      {children}
-    </h2>
+    <div className="mb-3">
+      <h2 className="font-mono text-xs font-semibold uppercase tracking-[0.2em] text-ink/70">{children}</h2>
+      <div className="mt-1.5 h-px w-8 bg-gold" />
+    </div>
   );
 }
 
@@ -31,7 +40,7 @@ export function Ticks({ value, max = 10 }: { value: number; max?: number }) {
   return (
     <div className="flex gap-[3px]" role="img" aria-label={`${value}% complete`}>
       {Array.from({ length: max }).map((_, i) => (
-        <span key={i} className={clsx('h-4 w-1.5 rounded-[1px]', i < filled ? 'bg-ledger' : 'bg-slate/60')} />
+        <span key={i} className={clsx('h-4 w-1.5 rounded-[1px]', i < filled ? 'bg-ochre' : 'bg-slate/60')} />
       ))}
     </div>
   );
