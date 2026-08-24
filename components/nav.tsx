@@ -8,10 +8,9 @@ const links = [
   { href: '/', label: 'Week' },
   { href: '/tasks', label: 'Tasks' },
   { href: '/habits', label: 'Habits' },
-  { href: '/finance', label: 'Finance' },
-  { href: '/notes', label: 'Notes' },
-  { href: '/quarter', label: 'Quarter' },
   { href: '/side-quests', label: 'Side Quests' },
+  { href: '/finance', label: 'Finance' },
+  { href: '/quarter', label: 'Quarter' },
 ];
 
 export function Nav() {

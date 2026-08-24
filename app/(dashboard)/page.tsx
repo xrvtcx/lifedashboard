@@ -33,7 +33,7 @@ export default async function HomePage({
   // Fetch calendar events across every calendar the account can see (not
   // just the primary one — shared/secondary calendars included), tracking
   // status so failures are visible on the page instead of only in logs.
-  let calendarEventsByDay: Record<string, Array<{ id: string; hour: number; startTime: string; endTime: string; title: string; description?: string; calendarName?: string }>> = {};
+  let calendarEventsByDay: Record<string, Array<{ id: string; hour: number; startTime: string; endTime: string; title: string; description?: string; calendarName?: string; color?: string }>> = {};
   let calendarStatus: { connected: boolean; eventCount: number; fetchError?: string } = {
     connected: !!token,
     eventCount: 0,

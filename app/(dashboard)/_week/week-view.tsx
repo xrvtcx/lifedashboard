@@ -5,6 +5,7 @@ import { WorkoutTracker } from './gym-tracker';
 import { WeeklyFocus } from './weekly-focus';
 import { Reflections } from './reflections';
 import { CurrentSideQuest } from './current-side-quest';
+import { Pomodoro } from './pomodoro';
 import { SectionLabel } from '@/components/ui';
 import { formatWeekRange } from '@/lib/week';
 
@@ -27,6 +28,7 @@ type CalendarEvent = {
   title: string;
   description?: string;
   calendarName?: string;
+  color?: string;
 };
 type CalendarStatus = { connected: boolean; eventCount: number; fetchError?: string };
 
@@ -124,6 +126,10 @@ export function WeekView({
         </div>
 
         <div className="space-y-6">
+          <div>
+            <SectionLabel>Pomodoro</SectionLabel>
+            <Pomodoro />
+          </div>
           <div>
             <SectionLabel>Weekly focus</SectionLabel>
             <WeeklyFocus

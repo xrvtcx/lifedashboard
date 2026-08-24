@@ -91,11 +91,14 @@ export type CalendarEvent = {
   title: string;
   description?: string;
   calendarName?: string;
+  color?: string;
 };
 
 // Every calendar the account can see: the primary one, plus any shared or
 // secondary calendars (a work calendar, one someone shared with you, etc.).
-export async function listCalendars(accessToken: string): Promise<Array<{ id: string; summary: string }>> {
+export async function listCalendars(
+  accessToken: string
+): Promise<Array<{ id: string; summary: string; color: string }>> {
   const res = await fetch('https://www.googleapis.com/calendar/v3/users/me/calendarList', {
     headers: { Authorization: `Bearer ${accessToken}` },
     cache: 'no-store',
@@ -105,9 +108,12 @@ export async function listCalendars(accessToken: string): Promise<Array<{ id: st
   // summaryOverride is the nickname *you* set for a shared calendar in your
   // own calendar list; summary is the name the calendar's owner gave it.
   // Your own rename always lands in summaryOverride, so prefer it.
+  // backgroundColor is the color Google shows for this calendar, so the
+  // dashboard can match what you already recognize.
   return (data.items || []).map((item: any) => ({
     id: item.id,
     summary: item.summaryOverride || item.summary || item.id,
+    color: item.backgroundColor || '#7A1F2B',
   }));
 }
 
@@ -165,7 +171,11 @@ export async function fetchWeekEvents(
       const events = await fetchEventsForCalendar(accessToken, cal.id, startDate, endDate);
       for (const e of events) {
         if (!byDay[e.date]) byDay[e.date] = [];
-        byDay[e.date].push({ ...e, calendarName: calendars.length > 1 ? cal.summary : undefined });
+        byDay[e.date].push({
+          ...e,
+          calendarName: calendars.length > 1 ? cal.summary : undefined,
+          color: cal.color,
+        });
       }
     } catch (err) {
       // One bad/inaccessible calendar shouldn't take down the rest.

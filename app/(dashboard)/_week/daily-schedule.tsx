@@ -6,9 +6,18 @@ import { upsertScheduleBlock } from './actions';
 import { dayLabel, dayNum, toISODate } from '@/lib/week';
 
 type Block = { date: string; hour: number; label: string };
-type CalendarEvent = { id: string; hour: number; startTime: string; endTime: string; title: string; description?: string; calendarName?: string };
+type CalendarEvent = {
+  id: string;
+  hour: number;
+  startTime: string;
+  endTime: string;
+  title: string;
+  description?: string;
+  calendarName?: string;
+  color?: string;
+};
 
-const HOURS = Array.from({ length: 17 }, (_, i) => i + 6); // 6am - 10pm
+const HOURS = Array.from({ length: 18 }, (_, i) => i + 5); // 5am - 10pm
 
 function formatHour(h: number) {
   const period = h < 12 ? 'AM' : 'PM';
@@ -53,6 +62,17 @@ export function DailySchedule({
     eventsByHour[e.hour].push(e);
   });
 
+  // Legend of calendars appearing anywhere this week, so the colors mean something.
+  const legend: Array<{ name: string; color: string }> = [];
+  Object.values(calendarEventsByDay)
+    .flat()
+    .forEach((e) => {
+      if (!e.calendarName || !e.color) return;
+      if (!legend.some((l) => l.name === e.calendarName)) {
+        legend.push({ name: e.calendarName, color: e.color });
+      }
+    });
+
   return (
     <div className="bg-paper border border-slate rounded-md overflow-hidden">
       <div className="flex border-b border-slate overflow-x-auto">
@@ -70,10 +90,32 @@ export function DailySchedule({
           </button>
         ))}
       </div>
+      {legend.length > 1 && (
+        <div className="flex flex-wrap gap-x-3 gap-y-1 px-3 py-2 border-b border-slate/50">
+          {legend.map((l) => (
+            <span key={l.name} className="flex items-center gap-1.5 text-[10px] text-ink/50">
+              <span
+                className="h-2 w-2 rounded-[1px] shrink-0"
+                style={{ backgroundColor: l.color }}
+              />
+              {l.name}
+            </span>
+          ))}
+        </div>
+      )}
       {allDayEvents.length > 0 && (
         <div className="px-3 py-2 border-b border-slate/50 space-y-1">
           {allDayEvents.map((e) => (
-            <div key={e.id} className="text-xs bg-ledgerpale/60 px-2 py-1 rounded-sm border-l-2 border-ledger">
+            <div
+              key={e.id}
+              className="text-xs px-2 py-1 rounded-sm"
+              style={{
+                borderLeftWidth: '3px',
+                borderLeftStyle: 'solid',
+                borderLeftColor: e.color || '#7A1F2B',
+                backgroundColor: `${e.color || '#7A1F2B'}14`,
+              }}
+            >
               <span className="font-medium text-ink/80">{e.title}</span>
               <span className="text-ink/50"> — all day{e.calendarName ? ` · ${e.calendarName}` : ''}</span>
             </div>
@@ -89,7 +131,16 @@ export function DailySchedule({
               <span className="w-14 shrink-0 text-xs font-mono text-ink/50 pt-1.5">{formatHour(h)}</span>
               <div className="flex-1 space-y-1">
                 {events.map((e) => (
-                  <div key={e.id} className="text-xs bg-ledgerpale/60 px-2 py-1 rounded-sm border-l-2 border-ledger">
+                  <div
+                    key={e.id}
+                    className="text-xs px-2 py-1 rounded-sm"
+                    style={{
+                      borderLeftWidth: '3px',
+                      borderLeftStyle: 'solid',
+                      borderLeftColor: e.color || '#7A1F2B',
+                      backgroundColor: `${e.color || '#7A1F2B'}14`,
+                    }}
+                  >
                     <div className="font-medium text-ink/80">{e.title}</div>
                     <div className="text-ink/50">
                       {e.startTime}
