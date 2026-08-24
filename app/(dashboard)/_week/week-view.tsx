@@ -19,6 +19,7 @@ type Block = { date: string; hour: number; label: string };
 type Session = { date: string; note: string | null };
 type FocusGoal = { id: number; title: string; completed: boolean };
 type Quest = { id: number; title: string; category: string; progress: number };
+type CalendarEvent = { id: string; startTime: string; endTime: string; title: string; description?: string };
 
 export function WeekView({
   weekStart,
@@ -34,6 +35,7 @@ export function WeekView({
   focusGoals,
   reflectionContent,
   activeQuests,
+  calendarEventsByDay = {},
 }: {
   weekStart: Date;
   weekDates: string[];
@@ -48,6 +50,7 @@ export function WeekView({
   focusGoals: FocusGoal[];
   reflectionContent: string;
   activeQuests: Quest[];
+  calendarEventsByDay?: Record<string, CalendarEvent[]>;
 }) {
   const weekStartISO = weekDates[0];
 
@@ -81,7 +84,7 @@ export function WeekView({
           </div>
           <div>
             <SectionLabel>Daily schedule</SectionLabel>
-            <DailySchedule blocks={blocks} days={weekDates} />
+            <DailySchedule blocks={blocks} days={weekDates} calendarEventsByDay={calendarEventsByDay} />
           </div>
         </div>
 

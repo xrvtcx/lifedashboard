@@ -220,3 +220,34 @@ export const parkingLot = pgTable('parking_lot', {
   notes: text('notes'),
   createdAt: timestamp('created_at').defaultNow().notNull(),
 });
+
+// ---- Google OAuth (one per user for now; we're single-user, so just one row) ----
+export const googleOAuthTokens = pgTable('google_oauth_tokens', {
+  id: serial('id').primaryKey(),
+  accessToken: text('access_token').notNull(),
+  refreshToken: text('refresh_token').notNull(),
+  expiresAt: timestamp('expires_at').notNull(),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+});
+
+// ---- Calendar events (synced from Google, cached locally) ----
+export const calendarEvents = pgTable('calendar_events', {
+  id: serial('id').primaryKey(),
+  externalId: text('external_id').notNull().unique(), // Google's event ID
+  date: date('date', { mode: 'string' }).notNull(),
+  startTime: text('start_time').notNull(), // "HH:MM" format, EST
+  endTime: text('end_time').notNull(),
+  title: text('title').notNull(),
+  description: text('description'),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+});
+
+// ---- SMS briefing state (map task numbers to task IDs for today's replies) ----
+export const smsBriefingMappings = pgTable('sms_briefing_mappings', {
+  id: serial('id').primaryKey(),
+  date: date('date', { mode: 'string' }).notNull().unique(),
+  taskMappings: text('task_mappings').notNull(), // JSON: { "1": taskId, "2": taskId, ... }
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+});

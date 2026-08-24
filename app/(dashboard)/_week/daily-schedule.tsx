@@ -6,6 +6,7 @@ import { upsertScheduleBlock } from './actions';
 import { dayLabel, dayNum, toISODate } from '@/lib/week';
 
 type Block = { date: string; hour: number; label: string };
+type CalendarEvent = { id: string; startTime: string; endTime: string; title: string; description?: string };
 
 const HOURS = Array.from({ length: 17 }, (_, i) => i + 6); // 6am - 10pm
 
@@ -15,7 +16,25 @@ function formatHour(h: number) {
   return `${display}${period}`;
 }
 
-export function DailySchedule({ blocks, days }: { blocks: Block[]; days: string[] }) {
+function hourToIndex(time: string): number | null {
+  const match = time.match(/(\d+)(?::(\d+))?\s*(AM|PM)/i);
+  if (!match) return null;
+  let hour = parseInt(match[1]);
+  const period = match[3].toUpperCase();
+  if (period === 'PM' && hour !== 12) hour += 12;
+  if (period === 'AM' && hour === 12) hour = 0;
+  return hour;
+}
+
+export function DailySchedule({
+  blocks,
+  days,
+  calendarEventsByDay,
+}: {
+  blocks: Block[];
+  days: string[];
+  calendarEventsByDay: Record<string, CalendarEvent[]>;
+}) {
   const todayISO = toISODate(new Date());
   const [activeDay, setActiveDay] = useState(days.includes(todayISO) ? todayISO : days[0]);
   const [values, setValues] = useState<Record<string, string>>(() => {
@@ -35,8 +54,17 @@ export function DailySchedule({ blocks, days }: { blocks: Block[]; days: string[
     await upsertScheduleBlock(activeDay, hour, values[k] ?? '');
   }
 
+  const dayEvents = calendarEventsByDay[activeDay] || [];
+  const eventsByHour: Record<number, CalendarEvent[]> = {};
+  dayEvents.forEach((e) => {
+    const idx = hourToIndex(e.startTime);
+    if (idx !== null) {
+      if (!eventsByHour[idx]) eventsByHour[idx] = [];
+      eventsByHour[idx].push(e);
+    }
+  });
+
   return (
-    // Plain div (not <Card>) so we can drop padding without fighting Card's default p-5
     <div className="bg-paper border border-slate rounded-md overflow-hidden">
       <div className="flex border-b border-slate overflow-x-auto">
         {days.map((d) => (
@@ -56,16 +84,25 @@ export function DailySchedule({ blocks, days }: { blocks: Block[]; days: string[
       <div className="max-h-[420px] overflow-y-auto divide-y divide-slate/50">
         {HOURS.map((h) => {
           const k = key(activeDay, h);
+          const events = eventsByHour[h] || [];
           return (
-            <div key={h} className="flex items-center gap-3 px-3 py-1.5">
-              <span className="w-14 shrink-0 text-xs font-mono text-ink/50">{formatHour(h)}</span>
-              <input
-                value={values[k] ?? ''}
-                onChange={(e) => setValues((prev) => ({ ...prev, [k]: e.target.value }))}
-                onBlur={() => commit(h)}
-                placeholder="-"
-                className="flex-1 bg-transparent text-sm focus:outline-none focus:border-b focus:border-ledger py-0.5"
-              />
+            <div key={h} className="flex items-start gap-3 px-3 py-2">
+              <span className="w-14 shrink-0 text-xs font-mono text-ink/50 pt-1.5">{formatHour(h)}</span>
+              <div className="flex-1 space-y-1">
+                {events.map((e) => (
+                  <div key={e.id} className="text-xs bg-slate/30 px-2 py-1 rounded-sm border border-slate">
+                    <div className="font-medium text-ink/80">{e.title}</div>
+                    <div className="text-ink/50">{e.startTime}</div>
+                  </div>
+                ))}
+                <input
+                  value={values[k] ?? ''}
+                  onChange={(e) => setValues((prev) => ({ ...prev, [k]: e.target.value }))}
+                  onBlur={() => commit(h)}
+                  placeholder="-"
+                  className="w-full bg-transparent text-sm focus:outline-none focus:border-b focus:border-ledger py-0.5"
+                />
+              </div>
             </div>
           );
         })}
