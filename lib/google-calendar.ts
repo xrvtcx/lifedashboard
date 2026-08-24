@@ -98,10 +98,17 @@ export type CalendarEvent = {
 export async function listCalendars(accessToken: string): Promise<Array<{ id: string; summary: string }>> {
   const res = await fetch('https://www.googleapis.com/calendar/v3/users/me/calendarList', {
     headers: { Authorization: `Bearer ${accessToken}` },
+    cache: 'no-store',
   });
   if (!res.ok) throw new Error(`Google Calendar list error: ${res.statusText}`);
   const data = await res.json();
-  return (data.items || []).map((item: any) => ({ id: item.id, summary: item.summary || item.id }));
+  // summaryOverride is the nickname *you* set for a shared calendar in your
+  // own calendar list; summary is the name the calendar's owner gave it.
+  // Your own rename always lands in summaryOverride, so prefer it.
+  return (data.items || []).map((item: any) => ({
+    id: item.id,
+    summary: item.summaryOverride || item.summary || item.id,
+  }));
 }
 
 // Fetch events from ONE calendar across a date range in a single call
@@ -118,7 +125,7 @@ async function fetchEventsForCalendar(
 
   const res = await fetch(
     `https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(calendarId)}/events?timeMin=${encodeURIComponent(timeMin)}&timeMax=${encodeURIComponent(timeMax)}&singleEvents=true&orderBy=startTime`,
-    { headers: { Authorization: `Bearer ${accessToken}` } }
+    { headers: { Authorization: `Bearer ${accessToken}` }, cache: 'no-store' }
   );
   if (!res.ok) throw new Error(`Google Calendar fetch error (${calendarId}): ${res.statusText}`);
   const data = await res.json();
