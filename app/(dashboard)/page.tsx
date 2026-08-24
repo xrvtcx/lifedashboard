@@ -3,6 +3,7 @@ import { tasks, scheduleBlocks, gymSessions, weeklyFocus, weeklyFocusGoals, refl
 import { and, eq, gte, lte, inArray } from 'drizzle-orm';
 import { startOfWeek, addWeeks, weekDates as computeWeekDates, toISODate } from '@/lib/week';
 import { fetchWeekEvents, refreshAccessToken } from '@/lib/google-calendar';
+import { getCurrentWeather } from '@/lib/weather';
 import { WeekView } from './_week/week-view';
 
 export const dynamic = 'force-dynamic';
@@ -58,6 +59,9 @@ export default async function HomePage({
     }
   }
 
+  const isCurrentWeekCheck = weekStartISO === toISODate(startOfWeek(new Date()));
+  const weather = isCurrentWeekCheck ? await getCurrentWeather() : null;
+
   const prevWeekISO = toISODate(addWeeks(weekStart, -1));
   const nextWeekISO = toISODate(addWeeks(weekStart, 1));
   const isCurrentWeek = weekStartISO === toISODate(startOfWeek(new Date()));
@@ -78,6 +82,7 @@ export default async function HomePage({
       reflectionContent={reflectionRows[0]?.content ?? ''}
       activeQuests={activeQuests}
       calendarEventsByDay={calendarEventsByDay}
+      weather={weather}
       calendarStatus={calendarStatus}
       oauthSuccess={searchParams.success}
       oauthError={searchParams.error}

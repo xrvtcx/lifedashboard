@@ -1,4 +1,5 @@
 import { login } from './actions';
+import { WaxSeal } from '@/components/wax-seal';
 
 export default function LoginPage({
   searchParams,
@@ -8,7 +9,10 @@ export default function LoginPage({
   return (
     <div className="min-h-screen flex items-center justify-center px-4">
       <div className="w-full max-w-sm border border-slate rounded-md bg-paper p-6">
-        <p className="stamp text-ledger mb-4">Rachel&rsquo;s Life Dashboard</p>
+        <div className="flex flex-col items-center text-center mb-5">
+          <WaxSeal size={72} />
+          <p className="stamp text-ledger mt-3">Rachel&rsquo;s Life Dashboard</p>
+        </div>
         <h1 className="font-display text-xl font-bold mb-1">Sign in</h1>
         <p className="text-sm text-ink/60 mb-5">Enter the shared password to continue.</p>
         <form action={login} className="space-y-3">
@@ -24,7 +28,7 @@ export default function LoginPage({
           {searchParams.error && <p className="text-xs text-rust">Wrong password. Try again.</p>}
           <button
             type="submit"
-            className="w-full bg-ink text-chalk px-4 py-2 rounded-sm text-sm font-medium hover:bg-ledgerdark transition-colors"
+            className="w-full bg-ledger text-chalk px-4 py-2 rounded-sm text-sm font-medium hover:bg-ledgerdark transition-colors"
           >
             Enter
           </button>

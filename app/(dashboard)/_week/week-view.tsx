@@ -6,6 +6,7 @@ import { WeeklyFocus } from './weekly-focus';
 import { Reflections } from './reflections';
 import { CurrentSideQuest } from './current-side-quest';
 import { Pomodoro } from './pomodoro';
+import { WeatherCard } from './weather-card';
 import { SectionLabel } from '@/components/ui';
 import { formatWeekRange } from '@/lib/week';
 
@@ -31,6 +32,18 @@ type CalendarEvent = {
   color?: string;
 };
 type CalendarStatus = { connected: boolean; eventCount: number; fetchError?: string };
+type CurrentWeather = {
+  temp: number;
+  feelsLike: number;
+  tempMin: number;
+  tempMax: number;
+  condition: string;
+  description: string;
+  icon: string;
+  humidity: number;
+  windSpeed: number;
+  observedAt: string;
+};
 
 export function WeekView({
   weekStart,
@@ -50,6 +63,7 @@ export function WeekView({
   calendarStatus,
   oauthSuccess,
   oauthError,
+  weather = null,
 }: {
   weekStart: Date;
   weekDates: string[];
@@ -68,6 +82,7 @@ export function WeekView({
   calendarStatus?: CalendarStatus;
   oauthSuccess?: string;
   oauthError?: string;
+  weather?: CurrentWeather | null;
 }) {
   const weekStartISO = weekDates[0];
 
@@ -123,13 +138,19 @@ export function WeekView({
             <SectionLabel>Daily schedule</SectionLabel>
             <DailySchedule blocks={blocks} days={weekDates} calendarEventsByDay={calendarEventsByDay} />
           </div>
+          <div className="grid sm:grid-cols-2 gap-6">
+            <div>
+              <SectionLabel>Pomodoro</SectionLabel>
+              <Pomodoro />
+            </div>
+            <div>
+              <SectionLabel>Today&rsquo;s weather</SectionLabel>
+              <WeatherCard weather={weather} />
+            </div>
+          </div>
         </div>
 
         <div className="space-y-6">
-          <div>
-            <SectionLabel>Pomodoro</SectionLabel>
-            <Pomodoro />
-          </div>
           <div>
             <SectionLabel>Weekly focus</SectionLabel>
             <WeeklyFocus
