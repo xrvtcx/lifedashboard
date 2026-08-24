@@ -8,12 +8,15 @@ export async function GET(req: NextRequest) {
   const code = searchParams.get('code');
   const error = searchParams.get('error');
 
+  // Get the origin (domain) from the request
+  const origin = new URL(req.url).origin;
+
   if (error) {
-    return NextResponse.redirect(`/?error=Google auth failed`);
+    return NextResponse.redirect(`${origin}/?error=Google auth failed`);
   }
 
   if (!code) {
-    return NextResponse.redirect(`/?error=No authorization code`);
+    return NextResponse.redirect(`${origin}/?error=No authorization code`);
   }
 
   try {
@@ -24,9 +27,9 @@ export async function GET(req: NextRequest) {
     await db.delete(googleOAuthTokens);
     await db.insert(googleOAuthTokens).values({ accessToken: access_token, refreshToken: refresh_token, expiresAt });
 
-    return NextResponse.redirect(`/?success=Google Calendar connected`);
+    return NextResponse.redirect(`${origin}/?success=Google Calendar connected`);
   } catch (err) {
     console.error('Google OAuth error:', err);
-    return NextResponse.redirect(`/?error=Authentication failed`);
+    return NextResponse.redirect(`${origin}/?error=Authentication failed`);
   }
 }
