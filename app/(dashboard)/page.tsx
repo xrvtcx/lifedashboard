@@ -2,7 +2,7 @@ import { db } from '@/db';
 import { tasks, scheduleBlocks, gymSessions, weeklyFocus, weeklyFocusGoals, reflections, sideQuests, googleOAuthTokens } from '@/db/schema';
 import { and, eq, gte, lte, inArray } from 'drizzle-orm';
 import { startOfWeek, addWeeks, weekDates as computeWeekDates, toISODate } from '@/lib/week';
-import { fetchCalendarEvents, refreshAccessToken } from '@/lib/google-calendar';
+import { fetchWeekEvents, refreshAccessToken } from '@/lib/google-calendar';
 import { WeekView } from './_week/week-view';
 
 export const dynamic = 'force-dynamic';
@@ -30,9 +30,10 @@ export default async function HomePage({
     db.select().from(googleOAuthTokens),
   ]);
 
-  // Fetch calendar events for each day, and track connection status so failures
-  // are visible on the page instead of only in Vercel logs.
-  const calendarEventsByDay: Record<string, Array<{ id: string; hour: number; startTime: string; endTime: string; title: string; description?: string }>> = {};
+  // Fetch calendar events across every calendar the account can see (not
+  // just the primary one — shared/secondary calendars included), tracking
+  // status so failures are visible on the page instead of only in logs.
+  let calendarEventsByDay: Record<string, Array<{ id: string; hour: number; startTime: string; endTime: string; title: string; description?: string; calendarName?: string }>> = {};
   let calendarStatus: { connected: boolean; eventCount: number; fetchError?: string } = {
     connected: !!token,
     eventCount: 0,
@@ -49,11 +50,8 @@ export default async function HomePage({
           .set({ accessToken: access_token, expiresAt: new Date(Date.now() + expires_in * 1000) });
       }
 
-      for (const day of days) {
-        const events = await fetchCalendarEvents(accessToken, day);
-        calendarEventsByDay[day] = events;
-        calendarStatus.eventCount += events.length;
-      }
+      calendarEventsByDay = await fetchWeekEvents(accessToken, days[0], days[6]);
+      calendarStatus.eventCount = Object.values(calendarEventsByDay).reduce((sum, evts) => sum + evts.length, 0);
     } catch (err) {
       console.error('Calendar fetch error:', err);
       calendarStatus.fetchError = err instanceof Error ? err.message : 'Unknown error';

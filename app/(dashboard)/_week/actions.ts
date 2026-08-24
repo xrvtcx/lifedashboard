@@ -68,29 +68,3 @@ export async function saveReflection(weekStart: string, content: string) {
   }
   revalidatePath('/');
 }
-
-export async function fetchTodayCalendarEvents(date: string) {
-  const { googleOAuthTokens, calendarEvents } = await import('@/db/schema');
-  const { db } = await import('@/db');
-  const { fetchCalendarEvents, refreshAccessToken } = await import('@/lib/google-calendar');
-  const { eq } = await import('drizzle-orm');
-
-  try {
-    const [token] = await db.select().from(googleOAuthTokens);
-    if (!token) return [];
-
-    if (new Date() > token.expiresAt) {
-      const { access_token, expires_in } = await refreshAccessToken(token.refreshToken);
-      await db
-        .update(googleOAuthTokens)
-        .set({ accessToken: access_token, expiresAt: new Date(Date.now() + expires_in * 1000) })
-        .where(eq(googleOAuthTokens.id, token.id));
-    }
-
-    const events = await fetchCalendarEvents(token.accessToken, date);
-    return events;
-  } catch (err) {
-    console.error('Failed to fetch calendar events:', err);
-    return [];
-  }
-}

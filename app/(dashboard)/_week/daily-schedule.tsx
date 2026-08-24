@@ -6,7 +6,7 @@ import { upsertScheduleBlock } from './actions';
 import { dayLabel, dayNum, toISODate } from '@/lib/week';
 
 type Block = { date: string; hour: number; label: string };
-type CalendarEvent = { id: string; hour: number; startTime: string; endTime: string; title: string; description?: string };
+type CalendarEvent = { id: string; hour: number; startTime: string; endTime: string; title: string; description?: string; calendarName?: string };
 
 const HOURS = Array.from({ length: 17 }, (_, i) => i + 6); // 6am - 10pm
 
@@ -75,7 +75,7 @@ export function DailySchedule({
           {allDayEvents.map((e) => (
             <div key={e.id} className="text-xs bg-slate/30 px-2 py-1 rounded-sm border border-slate">
               <span className="font-medium text-ink/80">{e.title}</span>
-              <span className="text-ink/50"> — all day</span>
+              <span className="text-ink/50"> — all day{e.calendarName ? ` · ${e.calendarName}` : ''}</span>
             </div>
           ))}
         </div>
@@ -91,7 +91,10 @@ export function DailySchedule({
                 {events.map((e) => (
                   <div key={e.id} className="text-xs bg-slate/30 px-2 py-1 rounded-sm border border-slate">
                     <div className="font-medium text-ink/80">{e.title}</div>
-                    <div className="text-ink/50">{e.startTime}</div>
+                    <div className="text-ink/50">
+                      {e.startTime}
+                      {e.calendarName ? ` · ${e.calendarName}` : ''}
+                    </div>
                   </div>
                 ))}
                 <input

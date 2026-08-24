@@ -8,7 +8,7 @@ import {
   smsBriefingMappings,
 } from '@/db/schema';
 import { and, eq, gte, lte } from 'drizzle-orm';
-import { fetchCalendarEvents, refreshAccessToken } from '@/lib/google-calendar';
+import { fetchDayEvents, refreshAccessToken } from '@/lib/google-calendar';
 import { sendSMS } from '@/lib/twilio';
 import { getWeatherBrief } from '@/lib/weather';
 import { toISODate, startOfWeek } from '@/lib/week';
@@ -33,7 +33,7 @@ export async function POST(req: NextRequest) {
           const { access_token, expires_in } = await refreshAccessToken(token.refreshToken);
           await db.update(googleOAuthTokens).set({ accessToken: access_token, expiresAt: new Date(Date.now() + expires_in * 1000) });
         }
-        const events = await fetchCalendarEvents(token.accessToken, today);
+        const events = await fetchDayEvents(token.accessToken, today);
         if (events.length > 0) {
           calendarEventLines = events.map((e) => `${e.startTime} - ${e.title}`).join('\n');
         }
