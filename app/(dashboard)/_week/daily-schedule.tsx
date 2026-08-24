@@ -6,7 +6,7 @@ import { upsertScheduleBlock } from './actions';
 import { dayLabel, dayNum, toISODate } from '@/lib/week';
 
 type Block = { date: string; hour: number; label: string };
-type CalendarEvent = { id: string; startTime: string; endTime: string; title: string; description?: string };
+type CalendarEvent = { id: string; hour: number; startTime: string; endTime: string; title: string; description?: string };
 
 const HOURS = Array.from({ length: 17 }, (_, i) => i + 6); // 6am - 10pm
 
@@ -14,16 +14,6 @@ function formatHour(h: number) {
   const period = h < 12 ? 'AM' : 'PM';
   const display = h % 12 === 0 ? 12 : h % 12;
   return `${display}${period}`;
-}
-
-function hourToIndex(time: string): number | null {
-  const match = time.match(/(\d+)(?::(\d+))?\s*(AM|PM)/i);
-  if (!match) return null;
-  let hour = parseInt(match[1]);
-  const period = match[3].toUpperCase();
-  if (period === 'PM' && hour !== 12) hour += 12;
-  if (period === 'AM' && hour === 12) hour = 0;
-  return hour;
 }
 
 export function DailySchedule({
@@ -55,13 +45,12 @@ export function DailySchedule({
   }
 
   const dayEvents = calendarEventsByDay[activeDay] || [];
+  const allDayEvents = dayEvents.filter((e) => e.hour === -1);
   const eventsByHour: Record<number, CalendarEvent[]> = {};
   dayEvents.forEach((e) => {
-    const idx = hourToIndex(e.startTime);
-    if (idx !== null) {
-      if (!eventsByHour[idx]) eventsByHour[idx] = [];
-      eventsByHour[idx].push(e);
-    }
+    if (e.hour === -1) return;
+    if (!eventsByHour[e.hour]) eventsByHour[e.hour] = [];
+    eventsByHour[e.hour].push(e);
   });
 
   return (
@@ -81,6 +70,16 @@ export function DailySchedule({
           </button>
         ))}
       </div>
+      {allDayEvents.length > 0 && (
+        <div className="px-3 py-2 border-b border-slate/50 space-y-1">
+          {allDayEvents.map((e) => (
+            <div key={e.id} className="text-xs bg-slate/30 px-2 py-1 rounded-sm border border-slate">
+              <span className="font-medium text-ink/80">{e.title}</span>
+              <span className="text-ink/50"> — all day</span>
+            </div>
+          ))}
+        </div>
+      )}
       <div className="max-h-[420px] overflow-y-auto divide-y divide-slate/50">
         {HOURS.map((h) => {
           const k = key(activeDay, h);

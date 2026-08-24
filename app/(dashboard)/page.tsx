@@ -7,7 +7,11 @@ import { WeekView } from './_week/week-view';
 
 export const dynamic = 'force-dynamic';
 
-export default async function HomePage({ searchParams }: { searchParams: { week?: string } }) {
+export default async function HomePage({
+  searchParams,
+}: {
+  searchParams: { week?: string; success?: string; error?: string };
+}) {
   const requestedStart = searchParams.week ? new Date(`${searchParams.week}T00:00:00`) : new Date();
   const weekStart = startOfWeek(requestedStart);
   const weekStartISO = toISODate(weekStart);
@@ -26,8 +30,13 @@ export default async function HomePage({ searchParams }: { searchParams: { week?
     db.select().from(googleOAuthTokens),
   ]);
 
-  // Fetch calendar events for each day
-  const calendarEventsByDay: Record<string, Array<{ id: string; startTime: string; endTime: string; title: string; description?: string }>> = {};
+  // Fetch calendar events for each day, and track connection status so failures
+  // are visible on the page instead of only in Vercel logs.
+  const calendarEventsByDay: Record<string, Array<{ id: string; hour: number; startTime: string; endTime: string; title: string; description?: string }>> = {};
+  let calendarStatus: { connected: boolean; eventCount: number; fetchError?: string } = {
+    connected: !!token,
+    eventCount: 0,
+  };
 
   if (token) {
     try {
@@ -43,9 +52,11 @@ export default async function HomePage({ searchParams }: { searchParams: { week?
       for (const day of days) {
         const events = await fetchCalendarEvents(accessToken, day);
         calendarEventsByDay[day] = events;
+        calendarStatus.eventCount += events.length;
       }
     } catch (err) {
       console.error('Calendar fetch error:', err);
+      calendarStatus.fetchError = err instanceof Error ? err.message : 'Unknown error';
     }
   }
 
@@ -69,6 +80,9 @@ export default async function HomePage({ searchParams }: { searchParams: { week?
       reflectionContent={reflectionRows[0]?.content ?? ''}
       activeQuests={activeQuests}
       calendarEventsByDay={calendarEventsByDay}
+      calendarStatus={calendarStatus}
+      oauthSuccess={searchParams.success}
+      oauthError={searchParams.error}
     />
   );
 }
