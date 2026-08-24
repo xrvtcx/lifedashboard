@@ -150,6 +150,8 @@ export const gymSessions = pgTable('gym_sessions', {
   id: serial('id').primaryKey(),
   date: date('date', { mode: 'string' }).notNull().unique(),
   note: text('note'),
+  amWorkout: text('am_workout'),
+  pmWorkout: text('pm_workout'),
   createdAt: timestamp('created_at').defaultNow().notNull(),
 });
 

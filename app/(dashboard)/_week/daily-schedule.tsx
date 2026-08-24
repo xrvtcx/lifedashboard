@@ -62,7 +62,7 @@ export function DailySchedule({
             onClick={() => setActiveDay(d)}
             className={clsx(
               'flex-1 min-w-[64px] px-2 py-2 text-center text-xs border-r border-slate last:border-r-0',
-              activeDay === d ? 'bg-ink text-chalk' : 'hover:bg-slate/20'
+              activeDay === d ? 'bg-ledger text-chalk' : 'hover:bg-ledgerpale/60'
             )}
           >
             <div className="uppercase tracking-wide">{dayLabel(d)}</div>
@@ -73,7 +73,7 @@ export function DailySchedule({
       {allDayEvents.length > 0 && (
         <div className="px-3 py-2 border-b border-slate/50 space-y-1">
           {allDayEvents.map((e) => (
-            <div key={e.id} className="text-xs bg-slate/30 px-2 py-1 rounded-sm border border-slate">
+            <div key={e.id} className="text-xs bg-ledgerpale/60 px-2 py-1 rounded-sm border-l-2 border-ledger">
               <span className="font-medium text-ink/80">{e.title}</span>
               <span className="text-ink/50"> — all day{e.calendarName ? ` · ${e.calendarName}` : ''}</span>
             </div>
@@ -89,7 +89,7 @@ export function DailySchedule({
               <span className="w-14 shrink-0 text-xs font-mono text-ink/50 pt-1.5">{formatHour(h)}</span>
               <div className="flex-1 space-y-1">
                 {events.map((e) => (
-                  <div key={e.id} className="text-xs bg-slate/30 px-2 py-1 rounded-sm border border-slate">
+                  <div key={e.id} className="text-xs bg-ledgerpale/60 px-2 py-1 rounded-sm border-l-2 border-ledger">
                     <div className="font-medium text-ink/80">{e.title}</div>
                     <div className="text-ink/50">
                       {e.startTime}

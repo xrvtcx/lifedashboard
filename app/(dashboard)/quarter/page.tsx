@@ -78,7 +78,7 @@ export default async function QuarterPage({ searchParams }: { searchParams: { q?
       </div>
 
       <div>
-        <SectionLabel>Gym consistency this quarter</SectionLabel>
+        <SectionLabel>Workout consistency this quarter</SectionLabel>
         <GymConsistencyChart data={gymByWeek} />
       </div>
 

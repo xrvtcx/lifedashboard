@@ -28,8 +28,8 @@ export function Nav() {
             className={clsx(
               'px-3 py-1.5 rounded-sm border transition-colors',
               active
-                ? 'bg-ink text-chalk border-ink'
-                : 'border-transparent text-ink/70 hover:border-slate hover:text-ink'
+                ? 'bg-ledger text-chalk border-ledger'
+                : 'border-transparent text-ink/70 hover:border-ledgerlight hover:text-ledger hover:bg-ledgerpale/50'
             )}
           >
             {l.label}

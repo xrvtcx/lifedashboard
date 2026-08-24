@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { Cormorant_Garamond, Inter, Josefin_Sans } from 'next/font/google';
+import { Cormorant_Garamond, Lora, Josefin_Sans } from 'next/font/google';
 import './globals.css';
 
 const display = Cormorant_Garamond({
@@ -7,7 +7,7 @@ const display = Cormorant_Garamond({
   variable: '--font-display',
   weight: ['500', '600', '700'],
 });
-const body = Inter({
+const body = Lora({
   subsets: ['latin'],
   variable: '--font-body',
   weight: ['400', '500', '600'],

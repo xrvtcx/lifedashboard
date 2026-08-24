@@ -32,6 +32,27 @@ export async function toggleGymDay(date: string, attended: boolean) {
   revalidatePath('/quarter');
 }
 
+export async function saveWorkout(date: string, slot: 'am' | 'pm', text: string) {
+  const value = text.trim() || null;
+  const [existing] = await db.select().from(gymSessions).where(eq(gymSessions.date, date));
+
+  if (existing) {
+    await db
+      .update(gymSessions)
+      .set(slot === 'am' ? { amWorkout: value } : { pmWorkout: value })
+      .where(eq(gymSessions.date, date));
+  } else if (value) {
+    // Writing a workout for an unmarked day implicitly marks it attended.
+    await db
+      .insert(gymSessions)
+      .values(slot === 'am' ? { date, amWorkout: value } : { date, pmWorkout: value })
+      .onConflictDoNothing();
+  }
+
+  revalidatePath('/');
+  revalidatePath('/quarter');
+}
+
 export async function saveWeeklyFocusTitle(weekStart: string, title: string) {
   const [existing] = await db.select().from(weeklyFocus).where(eq(weeklyFocus.weekStart, weekStart));
   if (existing) {

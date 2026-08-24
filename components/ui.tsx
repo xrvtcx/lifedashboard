@@ -5,7 +5,7 @@ export function Card({ className, ...props }: HTMLAttributes<HTMLDivElement>) {
   return (
     <div
       className={clsx(
-        'bg-paper border border-slate rounded-sm shadow-[0_1px_3px_rgba(33,24,21,0.06)] p-5',
+        'bg-paper border border-slate rounded-sm shadow-[0_1px_3px_rgba(122,31,43,0.07)] p-5',
         className
       )}
       {...props}
@@ -16,8 +16,8 @@ export function Card({ className, ...props }: HTMLAttributes<HTMLDivElement>) {
 export function SectionLabel({ children }: { children: React.ReactNode }) {
   return (
     <div className="mb-3">
-      <h2 className="font-mono text-xs font-semibold uppercase tracking-[0.2em] text-ink/70">{children}</h2>
-      <div className="mt-1.5 h-px w-8 bg-gold" />
+      <h2 className="font-mono text-xs font-semibold uppercase tracking-[0.2em] text-ledger">{children}</h2>
+      <div className="mt-1.5 h-px w-10 bg-gradient-to-r from-ledger to-gold" />
     </div>
   );
 }
